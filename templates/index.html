@@ -29,7 +29,7 @@
             <H2>Instructions</H2>
             <OL>
                 <li>Please pick up a normal 5+ character long username that you'd like to go with. Make sure that you continue using the same usernames throughout all your attempts. Please do not use generic/common usernames (e.g. admin, 123, etc.) as the system would not process such attempts.</li> <br>
-                <li>Then select a password for yourself. EVEN THOUGH WE DO NOT STORE THE PASSWORD YOU ENTER HERE BUT ONLY THE LENGTH OF THE PASSWORD FIELD, YOU MIGHT, FOR YOUR OWN SAFETY CONCERNS, WANT TO USE A PASSWORD THAT IS NOT SAME AS YOUR MAJOR PASSWORDS ELSEWHERE.</li> <br>
+                <li>Then select a password for your chosen username. EVEN THOUGH WE DO NOT STORE THE PASSWORD YOU ENTER HERE BUT ONLY THE LENGTH OF THE PASSWORD FIELD, YOU MAY - IN YOU OWN INTEREST - WANT TO USE A PASSWORD THAT IS NOT THE SAME AS A PASSWORD YOU USE ELSEWHERE.</li><br>
                 <li>Please try authenticating about 20 times. You do not have to do it in one sitting as long as you use the same username across multiple sessions.</li>
             </OL>
             
@@ -73,6 +73,9 @@
         }
         })();  
          
+        var hashCode = function(s){
+            return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+        }
 
         var mouseMovements = new Array();
         var usernameFieldLogs = new Array();
@@ -80,6 +83,7 @@
         
         usernameField = document.getElementById('input-box-un');
         passwordField = document.getElementById('input-box-pass');
+
         
         function attachDurationHandler(element, arr){
             var initTime=0;
@@ -113,6 +117,7 @@
                              '</p>';
             */
             var username = document.getElementById('input-box-un').value
+            var passwordHash = hashCode(document.getElementById('input-box-pass').value);
             var xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function() {
@@ -126,10 +131,12 @@
                     }
                 }
             };
+            
 
             xhr.open("POST", "/submit", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({   'username': username,
+                                        'passHash': passwordHash,
                                         'usernameFieldLogs': usernameFieldLogs,
                                         'passwordFieldLogs': passwordFieldLogs,
                                         'mouseMovements': mouseMovements
